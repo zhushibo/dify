@@ -80,6 +80,7 @@ const TextGeneration: FC<IMainProps> = ({
 
   const router = useRouter()
   const pathname = usePathname()
+
   useEffect(() => {
     const params = new URLSearchParams(searchParams)
     if (params.has('mode')) {
@@ -94,10 +95,28 @@ const TextGeneration: FC<IMainProps> = ({
   const isInBatchTab = currentTab === 'batch'
   const [inputs, doSetInputs] = useState<Record<string, any>>({})
   const inputsRef = useRef(inputs)
+
   const setInputs = useCallback((newInputs: Record<string, any>) => {
     doSetInputs(newInputs)
     inputsRef.current = newInputs
   }, [])
+
+  // set params from url
+  useEffect(() => {
+    setTimeout(() => {
+      const params = new URLSearchParams(searchParams)
+      params.forEach((value, key) => {
+          const newInputs = {
+            ...inputs,
+            [key]: value,
+          }
+          // avoid to be reset to null
+          doSetInputs(newInputs)
+      })
+    }, 500)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const [appId, setAppId] = useState<string>('')
   const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null)
   const [canReplaceLogo, setCanReplaceLogo] = useState<boolean>(false)
