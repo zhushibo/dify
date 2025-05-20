@@ -18,6 +18,7 @@ import { FileUploaderInAttachmentWrapper } from '@/app/components/base/file-uplo
 import { getProcessedFiles } from '@/app/components/base/file-uploader/utils'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import cn from '@/utils/classnames'
+import { useSearchParams } from 'next/navigation'
 
 export type IRunOnceProps = {
   siteInfo: SiteInfo
@@ -41,6 +42,7 @@ const RunOnce: FC<IRunOnceProps> = ({
   const { t } = useTranslation()
   const media = useBreakpoints()
   const isPC = media === MediaType.pc
+  const searchParams = useSearchParams()
 
   const onClear = () => {
     const newInputs: Record<string, any> = {}
@@ -65,14 +67,21 @@ const RunOnce: FC<IRunOnceProps> = ({
 
   useEffect(() => {
     const newInputs: Record<string, any> = {}
+    const params = new URLSearchParams(searchParams)
+
     promptConfig.prompt_variables.forEach((item) => {
-      if (item.type === 'string' || item.type === 'paragraph')
+      // set params from url
+      if(params.has(item.key))
+        newInputs[item.key] = params.get(item.key)
+
+      else if (item.type === 'string' || item.type === 'paragraph')
         newInputs[item.key] = ''
+
       else
         newInputs[item.key] = undefined
     })
     onInputsChange(newInputs)
-  }, [promptConfig.prompt_variables, onInputsChange])
+  }, [promptConfig.prompt_variables, onInputsChange, searchParams])
 
   return (
     <div className="">

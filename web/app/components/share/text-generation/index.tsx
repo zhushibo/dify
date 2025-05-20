@@ -101,22 +101,6 @@ const TextGeneration: FC<IMainProps> = ({
     inputsRef.current = newInputs
   }, [])
 
-  // set params from url
-  useEffect(() => {
-    setTimeout(() => {
-      const params = new URLSearchParams(searchParams)
-      params.forEach((value, key) => {
-          const newInputs = {
-            ...inputs,
-            [key]: value,
-          }
-          // avoid to be reset to null
-          doSetInputs(newInputs)
-      })
-    }, 500)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const [appId, setAppId] = useState<string>('')
   const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null)
   const [canReplaceLogo, setCanReplaceLogo] = useState<boolean>(false)
